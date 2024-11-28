@@ -1,0 +1,30 @@
+name: Build Electron App For Win/Mac
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+# Workflow's jobs
+jobs:
+  # job's id
+  release:
+    # job's name
+    name: build and release electron app
+    runs-on: ubuntu-20.04
+    # create steps
+    steps:
+      # step1: check out repository
+      - name: Check out git repository
+        uses: actions/checkout@coreelec-21
+      - name: npm install
+        run: |
+          apt install build-essential git python3
+          apt install make gcc git python3
+          DEVICE=Amlogic-ng make
+          DEVICE=Amlogic-ng make image
+      # step6: upload artifacts
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: target
